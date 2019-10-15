@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "774480724264",
+    "firebase_url": "https://hi-foods.firebaseio.com",
+    "project_id": "hi-foods",
+    "storage_bucket": "hi-foods.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774480724264:android:4913ecc378fa4185c6901d",
+        "android_client_info": {
+          "package_name": "com.altechtic.hi_food"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774480724264-jatqhpevuk3v3euc8hu50m06nottta7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.altechtic.hi_food",
+            "certificate_hash": "7f6abc77c8a005b169b0c6880c3c1d77383c3499"
+          }
+        },
+        {
+          "client_id": "774480724264-epibu1rdefue9nhejnf0nn5lklhkdbgo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.altechtic.hi_food",
+            "certificate_hash": "968421e2ca9599d91b74fc3ee8495d50968b2a57"
+          }
+        },
+        {
+          "client_id": "774480724264-iafe0qda7uoj514ttvd8k4f165f50hp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY4TS0isrwUyXLTGYKu2gSYPU0KZjN-aM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774480724264-iafe0qda7uoj514ttvd8k4f165f50hp3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "774480724264-2t5fp4sqgufrdufr0nkttdgtlebpah2k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.altechtic.hiFood"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
