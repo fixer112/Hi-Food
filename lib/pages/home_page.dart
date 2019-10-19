@@ -35,8 +35,10 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: Container(
-            //child: child,
-            ));
+        body: SingleChildScrollView(
+          child: Container(
+              //child: child,
+              ),
+        ));
   }
 }
