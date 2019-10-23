@@ -16,12 +16,14 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            headInfo(context),
-            authMethods(context),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              headInfo(context),
+              authMethods(context),
+            ],
+          ),
         ),
       ),
     );
