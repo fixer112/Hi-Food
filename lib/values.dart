@@ -5,6 +5,7 @@ String appName = 'Hi-Food';
 
 //Colors
 Color primaryColor = Colors.blue;
+Color backgroundColor = Colors.white10;
 
 //Style
 TextStyle headStyle =
