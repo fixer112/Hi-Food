@@ -34,6 +34,7 @@ dependencies:
   flutter_facebook_login: ^3.0.0
   #material_design_icons_flutter: ^3.2.4495
   curved_navigation_bar: ^0.3.1
+  smooth_star_rating: 1.0.3
 
 dev_dependencies:
   flutter_test:

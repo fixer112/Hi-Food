@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hi_food/pages/auth.dart';
 
 class Auth with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,9 +16,12 @@ class Auth with ChangeNotifier {
     return user != null ? user : null;
   }
 
-  Future logout() async {
+  Future logout(context) async {
     var result = FirebaseAuth.instance.signOut();
+
     notifyListeners();
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (BuildContext context) => AuthPage()));
     getUser().then((user) => print(user));
     return result;
   }

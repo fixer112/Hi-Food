@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 String appName = 'Hi-Food';
 
 //Colors
-Color primaryColor = Colors.blue;
+Color primaryColor = Colors.pink;
 Color backgroundColor = Colors.white10;
+Color ratingColor = Color(0xFFF18A11);
 
 //Style
 TextStyle headStyle =

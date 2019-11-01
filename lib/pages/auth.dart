@@ -39,7 +39,7 @@ class AuthPage extends StatelessWidget {
             Text(
               'SIGN IN TO CONTINUE',
               style: textStyle(
-                  Colors.black, 20, FontWeight.bold, FontStyle.normal),
+                  primaryColor, 20, FontWeight.bold, FontStyle.normal),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25.0),
@@ -107,6 +107,7 @@ class AuthPage extends StatelessWidget {
         child: Icon(
           icon,
           size: 25.0,
+          color: primaryColor,
         ),
       ),
     );

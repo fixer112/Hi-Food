@@ -26,11 +26,7 @@ class _HomeState extends State<Home> {
             ),
             IconButton(
               icon: Icon(Icons.power_settings_new),
-              onPressed: () => authservice.logout().then((user) =>
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => AuthPage()))),
+              onPressed: () => authservice.logout(context),
             ),
           ],
         ),
