@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -52,30 +55,20 @@ class AuthPage extends StatelessWidget {
                           snackbar('Phone $comingSoon', context, _scaffoldKey)),
                   authIcon(
                       FontAwesomeIcons.facebook,
-                      () => authservice
-                          .facebookAuth()
-                          .then((user) => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => Home())))
-                          .catchError((e) => snackbar(
-                              e.message, context, _scaffoldKey,
-                              seconds: 10))),
+                      () => authservice.facebookAuth(
+                            context,
+                            _scaffoldKey,
+                          )),
                   authIcon(
                       FontAwesomeIcons.twitter,
                       () => snackbar(
                           'Twitter $comingSoon', context, _scaffoldKey)),
                   authIcon(
                       FontAwesomeIcons.google,
-                      () => authservice
-                          .googleAuth()
-                          .then((user) => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => Home())))
-                          .catchError((e) => snackbar(
-                              e.message, context, _scaffoldKey,
-                              seconds: 10))),
+                      () => authservice.googleAuth(
+                            context,
+                            _scaffoldKey,
+                          )),
                   authIcon(
                       FontAwesomeIcons.envelope,
                       () =>

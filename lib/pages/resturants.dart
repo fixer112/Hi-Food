@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hi_food/values.dart';
 import 'package:hi_food/widgets/search.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Resturants extends StatelessWidget {
   final resturants = [
@@ -66,31 +68,18 @@ class Resturants extends StatelessWidget {
                         ),
                         Row(
                           children: <Widget>[
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFF18A11),
-                              size: 20,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFF18A11),
-                              size: 20,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFF18A11),
-                              size: 20,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFF18A11),
-                              size: 20,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
+                            SmoothStarRating(
+                                allowHalfRating: true,
+                                onRatingChanged: (v) {
+                                  //rating = v;
+                                  //setState(() {});
+                                },
+                                starCount: 5,
+                                rating: 4.3,
+                                size: 20.0,
+                                color: ratingColor,
+                                borderColor: primaryColor,
+                                spacing: 0.0),
                             Text(
                               ' (4.5K)',
                               style: TextStyle(fontSize: 13),

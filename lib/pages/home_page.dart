@@ -5,6 +5,7 @@ import 'package:hi_food/pages/auth.dart';
 import 'package:hi_food/pages/foods.dart';
 import 'package:hi_food/pages/resturants.dart';
 import 'package:hi_food/values.dart';
+import 'package:hi_food/widgets/cart.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -24,6 +25,12 @@ class _HomeState extends State<Home> {
         child: Scaffold(
           appBar: AppBar(
             title: Text('Hi-Food'),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Cart(20),
+              ),
+            ],
             bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.fastfood)),
@@ -43,11 +50,7 @@ class _HomeState extends State<Home> {
                 size: 30,
                 color: Colors.white,
               ),
-              Icon(
-                Icons.shopping_cart,
-                size: 30,
-                color: Colors.white,
-              ),
+              Cart(30),
               Icon(
                 Icons.account_circle,
                 size: 30,

@@ -1,4 +1,6 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 //Strings
 String appName = 'Hi-Food';
@@ -8,6 +10,8 @@ Color primaryColor = Colors.pink;
 Color backgroundColor = Colors.white10;
 Color ratingColor = Color(0xFFF18A11);
 
+//KEYS
+final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 //Style
 TextStyle headStyle =
     TextStyle(color: Colors.white, fontSize: 38.0, fontWeight: FontWeight.bold);
@@ -30,8 +34,21 @@ TextStyle textStyle(
 snackbar(text, BuildContext context, _scaffoldKey, {seconds = 5}) {
   final snack =
       SnackBar(content: Text(text), duration: Duration(seconds: seconds));
+  //Scaffold.of(context).removeCurrentSnackBar();
+  //Scaffold.of(context).showSnackBar(snack);
   _scaffoldKey.currentState.removeCurrentSnackBar();
   _scaffoldKey.currentState.showSnackBar(snack);
 }
 
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
+Future<bool> checkNetwork(
+  BuildContext context,
+  _scaffoldKey,
+) async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    snackbar('Check Internet Connection', context, _scaffoldKey);
+    print('no network');
+    return false;
+  }
+  return true;
+}

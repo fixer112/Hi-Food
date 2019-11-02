@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/auth_provider.dart';
@@ -30,6 +31,12 @@ class _SplashScreenState extends State<SplashScreen> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AuthPage())));
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
