@@ -36,6 +36,15 @@ dependencies:
   curved_navigation_bar: ^0.3.1
   smooth_star_rating: 1.0.3
   connectivity: ^0.4.5+2
+  transparent_image: ^0.1.0
+  google_maps_flutter: ^0.5.21+8
+  geolocator: ^5.1.4+2
+  #location: ^2.3.5
+  cached_network_image: ^2.0.0-rc
+  latlong: ^0.6.1
+  #permission_handler: ^3.3.0
+  location_permissions: '^2.0.3'
+  timeago: ^2.0.21
 
 dev_dependencies:
   flutter_test:

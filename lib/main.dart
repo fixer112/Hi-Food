@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/auth_provider.dart';
-import 'package:hi_food/pages/auth.dart';
+import 'package:hi_food/models/location.dart';
+import 'package:hi_food/models/models.dart';
 import 'package:hi_food/pages/home_page.dart';
 import 'package:hi_food/pages/splashScreen.dart';
 import 'package:hi_food/values.dart';
 import 'package:provider/provider.dart';
+import 'package:hi_food/models/db.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,16 +20,25 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             builder: (_) => Auth(),
           ),
+          ChangeNotifierProvider(
+            builder: (_) => LocationProvider(),
+          ),
+          ChangeNotifierProvider(
+            builder: (_) => DB(),
+          ),
         ],
         child: MaterialApp(
           navigatorKey: navKey,
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
+          title: appName,
           theme: ThemeData(
+            iconTheme: IconThemeData(
+              color: primaryColor,
+            ),
             primarySwatch: primaryColor,
             backgroundColor: backgroundColor,
           ),
-          home: SplashScreen(),
+          home: Home(),
         ));
   }
 }

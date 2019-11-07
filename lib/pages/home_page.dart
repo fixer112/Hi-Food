@@ -43,14 +43,15 @@ class _HomeState extends State<Home> {
             buttonBackgroundColor: primaryColor,
             color: primaryColor,
             height: 50.0,
+            index: 1,
             key: _bottomNavigationKey,
             items: <Widget>[
+              Cart(30),
               Icon(
                 Icons.home,
                 size: 30,
                 color: Colors.white,
               ),
-              Cart(30),
               Icon(
                 Icons.account_circle,
                 size: 30,
