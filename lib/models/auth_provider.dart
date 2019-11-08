@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hi_food/pages/auth.dart';
-import 'package:hi_food/pages/home_page.dart';
+import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/values.dart';
 
 class Auth with ChangeNotifier {
@@ -19,17 +19,22 @@ class Auth with ChangeNotifier {
     return user != null ? user : null;
   }
 
-  addUser(FirebaseUser user) {
+  addUser(FirebaseUser user) async {
     if (user != null) {
-      Firestore.instance.collection('users').document(user.uid).setData({
-        'id': user.uid,
-        'name': user.displayName,
-        'email': user.email,
-        'photo': user.photoUrl,
-        'number': user.phoneNumber,
-        'role': 'user',
-        'logged': true
-      });
+      var doc =
+          await Firestore.instance.collection('users').document(user.uid).get();
+      if (!doc.exists) {
+        Firestore.instance.collection('users').document(user.uid).setData({
+          'id': user.uid,
+          'name': user.displayName,
+          'email': user.email,
+          'photo': user.photoUrl,
+          'number': user.phoneNumber,
+          'role': ['user'],
+          //'logged': true
+          //'te'
+        });
+      }
     }
   }
 

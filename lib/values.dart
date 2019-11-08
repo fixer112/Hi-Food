@@ -113,11 +113,11 @@ Future<bool> checkNetwork(
 
 void checkGps({Function function}) {
   LocationProvider().check().then((value) {
-    if (value) {
-      check = value;
-      function();
-      //print(check);
-    }
+    //if (value) {
+    check = value;
+    function();
+    //print(check);
+    // }
   });
 }
 

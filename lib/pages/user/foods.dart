@@ -25,8 +25,7 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    checkGPS(context);
-    checkGps(function: () => setState(() {}));
+
     //refresh();
     //checkGps(function: () => setState(() {}));
 
@@ -54,99 +53,92 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     //checkGps(function: () => setState(() {}));
-    return !check
-        ? noGps(() {
-            checkGps(function: () => setState(() {}));
-            checkGPS(context);
-          })
-        : Padding(
-            padding: EdgeInsets.all(10),
-            child: ListView(
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: ListView(
+        children: <Widget>[
+          Search('food'),
+          SizedBox(
+            height: 15.0,
+          ),
+          Container(
+            height: 50.0,
+            padding: EdgeInsets.only(
+              left: 10.0,
+              right: 10.0,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(width: 4.0, color: primaryColor),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Search('food'),
-                SizedBox(
-                  height: 15.0,
+                Text(
+                  'RECENT ORDERS',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Container(
-                  height: 50.0,
-                  padding: EdgeInsets.only(
-                    left: 10.0,
-                    right: 10.0,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(width: 4.0, color: primaryColor),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'RECENT ORDERS',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      RaisedButton(
-                        color: primaryColor,
-                        textColor: Colors.white,
-                        onPressed: () {},
-                        child: const Text('VIEW ALL',
-                            style: TextStyle(fontSize: 15)),
-                      )
-                    ],
-                  ),
-                ),
+                RaisedButton(
+                  color: primaryColor,
+                  textColor: Colors.white,
+                  onPressed: () {},
+                  child: const Text('VIEW ALL', style: TextStyle(fontSize: 15)),
+                )
+              ],
+            ),
+          ),
 
-                SizedBox(height: 15.0),
-                Container(
-                  //height: 200,
-                  child: StreamProvider<List<Food>>.value(
-                    value: db.streamAllOrders(),
-                    child: OrdersW(),
-                    catchError: (context, e) {
-                      print(e);
-                      return;
-                    },
-                    initialData: [],
-                  ),
-                  /* ListView(
+          SizedBox(height: 15.0),
+          Container(
+            //height: 200,
+            child: StreamProvider<List<Food>>.value(
+              value: db.streamAllOrders(),
+              child: OrdersW(),
+              catchError: (context, e) {
+                print(e);
+                return;
+              },
+              initialData: [],
+            ),
+            /* ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(6, (int index) {
                 return Container(width: 200.0, child: demoLister);
               }),
             ), */
-                ),
+          ),
 
-                SizedBox(
-                  height: 10.0,
-                ),
-                StreamProvider<List<FoodCategory>>.value(
-                  value: db.streamFoodCategories(),
-                  child: Categories(notify: refresh),
-                  catchError: (context, e) {
-                    print(e);
-                    return;
-                  },
-                  initialData: [],
-                ),
+          SizedBox(
+            height: 10.0,
+          ),
+          StreamProvider<List<FoodCategory>>.value(
+            value: db.streamFoodCategories(),
+            child: Categories(notify: refresh),
+            catchError: (context, e) {
+              print(e);
+              return;
+            },
+            initialData: [],
+          ),
 
-                SizedBox(
-                  height: 10.0,
-                ),
-                StreamProvider<List<Food>>.value(
-                  updateShouldNotify: (_, __) => true,
-                  value: db.streamFoods(),
-                  child: Products(),
-                  catchError: (context, e) {
-                    print(e);
-                    return;
-                  },
-                  initialData: [],
-                ),
-                //productList(),
-              ],
-            ),
-          );
+          SizedBox(
+            height: 10.0,
+          ),
+          StreamProvider<List<Food>>.value(
+            updateShouldNotify: (_, __) => true,
+            value: db.streamFoods(),
+            child: Products(notify: refresh),
+            catchError: (context, e) {
+              print(e);
+              return;
+            },
+            initialData: [],
+          ),
+          //productList(),
+        ],
+      ),
+    );
   }
 }
 
@@ -347,10 +339,19 @@ class _CategoriesState extends State<Categories> {
 }
 
 class Products extends StatefulWidget {
+  Products({this.notify});
+  final Function() notify;
   _ProductsState createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Products> {
+  @override
+  void initState() {
+    checkGps(function: () => setState(() {}));
+    checkGPS(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var foods = Provider.of<List<Food>>(context);
@@ -366,8 +367,11 @@ class _ProductsState extends State<Products> {
     }); */
     //print(foods);
     //return Container();
-    return foods == null
-        ? Container()
+    return !check
+        ? noGps(() {
+            checkGps(function: () => widget.notify());
+            checkGPS(context);
+          })
         : Column(
             children: foods.map((food) {
             //var res = db.getResturant(food.resturantId);

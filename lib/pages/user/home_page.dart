@@ -32,6 +32,7 @@ class _HomeState extends State<Home> {
               ),
             ],
             bottom: TabBar(
+              onTap: (int) {},
               tabs: [
                 Tab(icon: Icon(Icons.fastfood)),
                 Tab(icon: Icon(Icons.restaurant_menu))
@@ -71,6 +72,7 @@ class _HomeState extends State<Home> {
             },
           ),
           body: TabBarView(
+            physics: BouncingScrollPhysics(),
             children: [
               Foods(),
               Resturants(),
