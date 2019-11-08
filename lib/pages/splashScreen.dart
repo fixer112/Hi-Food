@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/auth_provider.dart';
 import 'package:hi_food/pages/auth.dart';
-import 'package:hi_food/pages/home_page.dart';
+import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/values.dart';
 import 'package:provider/provider.dart';
 

@@ -22,11 +22,13 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   //AnimationController _animationController;
 
   //Animation<double> _animation;
-
   @override
   void initState() {
     super.initState();
     checkGPS(context);
+    checkGps(function: () => setState(() {}));
+    //refresh();
+    //checkGps(function: () => setState(() {}));
 
     /* _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
@@ -51,6 +53,7 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //checkGps(function: () => setState(() {}));
     return !check
         ? noGps(() {
             checkGps(function: () => setState(() {}));
@@ -172,6 +175,7 @@ class _OrdersWState extends State<OrdersW> {
       //Future.delayed(Duration(seconds: 2), () => widget.recentAvailable(true));
       //widget.notify();
     } */
+
     return Container(
         height: 220.0,
         child: ListView(

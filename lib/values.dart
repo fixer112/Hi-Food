@@ -37,7 +37,7 @@ TextStyle textStyle(
 
 checkGPS(context) {
   LocationProvider().check().then((check) {
-    print(check);
+    //print(check);
     if (!check) {
       showDialog(
         context: context,
@@ -116,6 +116,7 @@ void checkGps({Function function}) {
     if (value) {
       check = value;
       function();
+      //print(check);
     }
   });
 }

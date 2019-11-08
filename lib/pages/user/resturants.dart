@@ -23,6 +23,7 @@ class _ResturantState extends State<Resturants> {
     // TODO: implement initState
     super.initState();
     checkGPS(context);
+    checkGps(function: () => setState(() {}));
   }
 
   @override

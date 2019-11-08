@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hi_food/models/auth_provider.dart';
 import 'package:hi_food/models/location.dart';
 import 'package:hi_food/models/models.dart';
-import 'package:hi_food/pages/home_page.dart';
+import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/pages/splashScreen.dart';
 import 'package:hi_food/values.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +39,10 @@ class MyApp extends StatelessWidget {
             backgroundColor: backgroundColor,
           ),
           home: Home(),
+          //initialRoute: '/land',
+          /* routes: {
+              '/user/home': (context) => Home(),
+            }, */
         ));
   }
 }

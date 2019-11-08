@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hi_food/models/auth_provider.dart';
 import 'package:hi_food/models/location.dart';
 import 'package:latlong/latlong.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'dart:async';
 import 'models.dart';
 
@@ -52,8 +53,7 @@ class DB with ChangeNotifier {
     if (!check) {
       return resturants;
     }
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator().getCurrentPosition();
     Distance distance = new Distance();
     for (var resturant in resturants) {
       resturant.distance = distance(
@@ -83,7 +83,7 @@ class DB with ChangeNotifier {
     /* for (var r in byPrice) {
       r.recommend = true;
     } */
-    resturants.removeWhere((r) => byPrice.contains(r));
+    //resturants.removeWhere((r) => byPrice.contains(r));
     resturants.sort((a, b) => a.distance.round().compareTo(b.distance.round()));
 
     List<Resturant> newResturants = [...byPrice, ...resturants];
@@ -92,11 +92,11 @@ class DB with ChangeNotifier {
 
   Future<List<Food>> sortFoodResturants(List<Food> foods) async {
     bool check = await LocationProvider().check();
+
     if (!check) {
       return foods;
     }
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator().getCurrentPosition();
     Distance distance = new Distance();
     for (var food in foods) {
       food.resturant.distance = distance(
@@ -123,10 +123,8 @@ class DB with ChangeNotifier {
         .toList()
         .where((r) => (r.resturant.distance / 1000).round() <= 15)
         .toList();
-    /* for (var r in byPrice) {
-      r.resturant.recommend = true;
-    } */
-    foods.removeWhere((r) => byPrice.contains(r));
+
+    //foods.removeWhere((r) => byPrice.contains(r));
     foods.sort((a, b) =>
         a.resturant.distance.round().compareTo(b.resturant.distance.round()));
 

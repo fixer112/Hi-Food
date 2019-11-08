@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hi_food/models/models.dart';
@@ -21,27 +19,22 @@ class LocationProvider with ChangeNotifier {
     Geolocator geolocator = Geolocator();
     GeolocationStatus status =
         await geolocator.checkGeolocationPermissionStatus();
-    bool enabled = await geolocator.isLocationServiceEnabled();
-    //print(status);
+
     if (status == GeolocationStatus.granted) {
+      bool enabled = await geolocator.isLocationServiceEnabled();
       if (!enabled) {
-        //bool isOpened = await LocationPermissions().openAppSettings();
-        bool isShown =
-            await LocationPermissions().shouldShowRequestPermissionRationale();
-        //gpsEnabled = false;
         return false;
       }
-      //gpsEnabled = true;
+
       return true;
     } else {
       PermissionStatus permission =
           await LocationPermissions().requestPermissions();
-      print(permission);
+
       if (permission == PermissionStatus.granted) {
-        //gpsEnabled = true;
         return true;
       }
-      //gpsEnabled = false;
+
       return false;
     }
   }
