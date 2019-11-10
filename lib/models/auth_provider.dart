@@ -59,7 +59,7 @@ class Auth with ChangeNotifier {
     BuildContext context,
     _scaffoldKey,
   ) async {
-    checkNetwork(context, _scaffoldKey);
+    //checkNetwork(context, _scaffoldKey);
 
     //print('test');
     final result = await facebookLogin.logIn(['email']);
@@ -85,9 +85,11 @@ class Auth with ChangeNotifier {
         print('Facebook Cancelled');
         break;
       case FacebookLoginStatus.error:
+        snackbar('An error occured', context, _scaffoldKey);
         print('Facebook Error ' + result.errorMessage);
-        snackbar('An Error Occured', context, _scaffoldKey);
         // _changeBlackVisible();
+        //FacebookLoginStatus.
+
         break;
     }
     /* } catch (e) {
@@ -100,7 +102,7 @@ class Auth with ChangeNotifier {
     BuildContext context,
     _scaffoldKey,
   ) async {
-    checkNetwork(context, _scaffoldKey);
+    //checkNetwork(context, _scaffoldKey);
     final GoogleSignIn _googleSignIn = GoogleSignIn();
 
     try {
@@ -123,7 +125,7 @@ class Auth with ChangeNotifier {
       return user;
     } catch (e) {
       print("Error ${e.code} ${e.message}");
-      snackbar('An Error Occured', context, _scaffoldKey);
+      snackbar('An error occured', context, _scaffoldKey);
       //throw new AuthException(e.code, e.message);
     }
   }

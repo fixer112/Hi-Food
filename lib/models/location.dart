@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geohash/geohash.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hi_food/models/models.dart';
 import 'package:latlong/latlong.dart';
@@ -13,7 +14,27 @@ class LocationProvider with ChangeNotifier {
     return _position;
   }
 
-  //bool gpsEnabled = false;
+  getGeohashRange(
+    double latitude,
+    double longitude,
+    double distance, // miles
+  ) {
+    var lat = 0.0144927536231884; // degrees latitude per mile
+    var lon = 0.0181818181818182;
+    //1.609// degrees longitude per mile
+    distance = distance;
+
+    var lowerLat = latitude - lat * distance;
+    var lowerLon = longitude - lon * distance;
+
+    var upperLat = latitude + lat * distance;
+    var upperLon = longitude + lon * distance;
+
+    var lower = Geohash.encode(lowerLat, lowerLon);
+    var upper = Geohash.encode(upperLat, upperLon);
+    var data = {'upper': upper, 'lower': lower};
+    return data;
+  }
 
   Future<bool> check() async {
     Geolocator geolocator = Geolocator();
@@ -40,8 +61,7 @@ class LocationProvider with ChangeNotifier {
   }
 
   updateLocation() async {
-    Position newPosition = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position newPosition = await Geolocator().getCurrentPosition();
     //.timeout(new Duration(seconds: 20));
 
     _position = newPosition;

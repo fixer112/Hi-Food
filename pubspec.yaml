@@ -45,6 +45,7 @@ dependencies:
   #permission_handler: ^3.3.0
   location_permissions: '^2.0.3'
   timeago: ^2.0.21
+  geohash: ^0.2.1
 
 dev_dependencies:
   flutter_test:

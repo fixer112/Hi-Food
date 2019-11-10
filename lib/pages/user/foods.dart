@@ -25,15 +25,6 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
-    //refresh();
-    //checkGps(function: () => setState(() {}));
-
-    /* _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
-    _animation = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(curve: Curves.bounceOut, parent: _animationController));
-    _animationController.forward(); */
   }
 
   var db = DB();
@@ -42,13 +33,6 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   refresh() {
     setState(() {});
   }
-
-  /* setAvailable(bool value) {
-    recentAvailable = value;
-    refresh();
-  }
-
-  bool recentAvailable = false; */
 
   @override
   Widget build(BuildContext context) {
@@ -143,9 +127,6 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
 }
 
 class OrdersW extends StatefulWidget {
-  /* OrdersW({this.recentAvailable});
-  final Function(bool value) recentAvailable; */
-
   _OrdersWState createState() => _OrdersWState();
 }
 
@@ -154,23 +135,14 @@ class _OrdersWState extends State<OrdersW> {
   Widget build(BuildContext context) {
     var foods = Provider.of<List<Food>>(context);
 
-    //foods = [];
-    /* if (foods.length >= 10) {
+    if (foods.length >= 10) {
       foods = foods.sublist(0, 10);
     }
-
-    if (foods.length > 0) {
-      Future.delayed(Duration(seconds: 2), () => widget.recentAvailable(true));
-
-      //widget.notify();
-    } else {
-      //Future.delayed(Duration(seconds: 2), () => widget.recentAvailable(true));
-      //widget.notify();
-    } */
 
     return Container(
         height: 220.0,
         child: ListView(
+          shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           children: List.generate(foods.length, (int index) {
             final ago = timeago.format(
