@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Cart extends StatefulWidget {
   Cart(this.size, {Key key}) : super(key: key);
-  final double size;
+  double size = 20;
   _CartState createState() => _CartState();
 }
 

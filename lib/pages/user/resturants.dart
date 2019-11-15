@@ -145,13 +145,13 @@ class _ResturantWState extends State<ResturantW> {
                             //setState(() {});
                           },
                           starCount: 5,
-                          rating: 4.3,
+                          rating: double.parse(resturant.avgRate.toString()),
                           size: 20.0,
                           color: ratingColor,
-                          borderColor: primaryColor,
+                          borderColor: ratingColor,
                           spacing: 0.0),
                       Text(
-                        ' (4.5K)',
+                        '(${formatNumber(resturant.totalRating)})',
                         style: TextStyle(fontSize: 13),
                       ),
                       SizedBox(

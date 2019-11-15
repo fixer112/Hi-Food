@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geohash/geohash.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,8 +31,10 @@ class LocationProvider with ChangeNotifier {
     var upperLat = latitude + lat * distance;
     var upperLon = longitude + lon * distance;
 
-    var lower = Geohash.encode(lowerLat, lowerLon);
-    var upper = Geohash.encode(upperLat, upperLon);
+    var lower =
+        /* GeoPoint(lowerLat, lowerLon) */ Geohash.encode(lowerLat, lowerLon);
+    var upper =
+        /* GeoPoint(upperLat, upperLon) */ Geohash.encode(upperLat, upperLon);
     var data = {'upper': upper, 'lower': lower};
     return data;
   }

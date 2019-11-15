@@ -24,18 +24,13 @@ class _SplashScreenState extends State<SplashScreen> {
       FirebaseAuth.instance.onAuthStateChanged.listen((user) {});
 
       authservice.getUser().then((user) => user != null
-          ? Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (BuildContext context) => Home()))
-          : Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AuthPage())));
+          ? Navigator.pushReplacementNamed(context, '/auth')
+          : Navigator.pushReplacementNamed(context, '/home'));
     });
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 

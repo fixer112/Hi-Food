@@ -1,11 +1,7 @@
-import 'dart:async';
-
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hi_food/models/auth_provider.dart';
-import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/values.dart';
 import 'package:provider/provider.dart';
 

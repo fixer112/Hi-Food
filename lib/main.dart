@@ -1,7 +1,10 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/auth_provider.dart';
 import 'package:hi_food/models/location.dart';
 import 'package:hi_food/models/models.dart';
+import 'package:hi_food/models/remote_config.dart';
+import 'package:hi_food/pages/auth.dart';
 import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/pages/splashScreen.dart';
 import 'package:hi_food/values.dart';
@@ -27,23 +30,41 @@ class MyApp extends StatelessWidget {
             builder: (_) => DB(),
           ),
         ],
-        child: MaterialApp(
-          navigatorKey: navKey,
-          debugShowCheckedModeBanner: false,
-          title: appName,
-          theme: ThemeData(
-            iconTheme: IconThemeData(
-              color: primaryColor,
-            ),
-            primarySwatch: primaryColor,
-            backgroundColor: backgroundColor,
-          ),
-          home: Home(),
-          //initialRoute: '/land',
-          /* routes: {
-              '/user/home': (context) => Home(),
-            }, */
-        ));
+        child: FutureBuilder<RemoteConfig>(
+            future: Rconfig().getRemoteConfig(),
+            builder: (context, snapshot) {
+              RemoteConfig config = snapshot.data;
+              //print(config.getString('primary_color'));
+              return config == null
+                  ? Container(
+                      color: backgroundColor,
+                    )
+                  : MaterialApp(
+                      navigatorKey: navKey,
+                      debugShowCheckedModeBanner: false,
+                      title: appName,
+                      theme: ThemeData(
+                        cursorColor: primaryColor,
+                        indicatorColor: primaryColor,
+                        accentColor: primaryColor,
+                        iconTheme: IconThemeData(
+                          color: primaryColor,
+                        ),
+                        primarySwatch: primarySwatch,
+                        //colorScheme: ,
+                        backgroundColor: backgroundColor,
+                      ),
+                      color: primaryColor,
+
+                      //home: Home(),
+                      initialRoute: '/home',
+                      routes: {
+                        '/home': (context) => Home(),
+                        '/land': (context) => SplashScreen(),
+                        '/auth': (context) => AuthPage(),
+                      },
+                    );
+            }));
   }
 }
 

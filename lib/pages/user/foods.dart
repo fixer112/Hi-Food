@@ -24,6 +24,8 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   //Animation<double> _animation;
   @override
   void initState() {
+    checkGps(function: () => setState(() {}));
+    checkGPS(context);
     super.initState();
   }
 
@@ -37,92 +39,111 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     //checkGps(function: () => setState(() {}));
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: ListView(
-        children: <Widget>[
-          Search('food'),
-          SizedBox(
-            height: 15.0,
-          ),
-          Container(
-            height: 50.0,
-            padding: EdgeInsets.only(
-              left: 10.0,
-              right: 10.0,
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(width: 4.0, color: primaryColor),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return !check
+        ? noGps(() {
+            checkGps(function: () => setState(() {}));
+            checkGPS(context);
+          })
+        : Padding(
+            padding: EdgeInsets.all(10),
+            child: ListView(
               children: <Widget>[
-                Text(
-                  'RECENT ORDERS',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                RaisedButton(
-                  color: primaryColor,
-                  textColor: Colors.white,
-                  onPressed: () {},
-                  child: const Text('VIEW ALL', style: TextStyle(fontSize: 15)),
-                )
-              ],
-            ),
-          ),
+                Search('food'),
+                /* 
+                searchedFoods.length > 0
+                    ? ListView(
+                        children: searchedFoods.map((food) {
+                          return;
+                        }).toList(),
+                      )
+                    :  */
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Container(
+                      height: 50.0,
+                      padding: EdgeInsets.only(
+                        left: 10.0,
+                        right: 10.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(width: 4.0, color: primaryColor),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'RECENT ORDERS',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          RaisedButton(
+                            color: primaryColor,
+                            textColor: Colors.white,
+                            onPressed: () {},
+                            child: const Text('VIEW ALL',
+                                style: TextStyle(fontSize: 15)),
+                          )
+                        ],
+                      ),
+                    ),
 
-          SizedBox(height: 15.0),
-          Container(
-            //height: 200,
-            child: StreamProvider<List<Food>>.value(
-              value: db.streamAllOrders(),
-              child: OrdersW(),
-              catchError: (context, e) {
-                print(e);
-                return;
-              },
-              initialData: [],
-            ),
-            /* ListView(
+                    SizedBox(height: 15.0),
+                    Container(
+                      //height: 200,
+                      child: StreamProvider<List<Food>>.value(
+                        value: db.streamAllOrders(),
+                        child: OrdersW(),
+                        catchError: (context, e) {
+                          print(e);
+                          return;
+                        },
+                        initialData: [],
+                      ),
+                      /* ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(6, (int index) {
                 return Container(width: 200.0, child: demoLister);
               }),
             ), */
-          ),
+                    ),
 
-          SizedBox(
-            height: 10.0,
-          ),
-          StreamProvider<List<FoodCategory>>.value(
-            value: db.streamFoodCategories(),
-            child: Categories(notify: refresh),
-            catchError: (context, e) {
-              print(e);
-              return;
-            },
-            initialData: [],
-          ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    StreamProvider<List<FoodCategory>>.value(
+                      value: db.streamFoodCategories(),
+                      child: Categories(notify: refresh),
+                      catchError: (context, e) {
+                        print(e);
+                        return;
+                      },
+                      initialData: [],
+                    ),
 
-          SizedBox(
-            height: 10.0,
-          ),
-          StreamProvider<List<Food>>.value(
-            updateShouldNotify: (_, __) => true,
-            value: db.streamFoods(),
-            child: Products(notify: refresh),
-            catchError: (context, e) {
-              print(e);
-              return;
-            },
-            initialData: [],
-          ),
-          //productList(),
-        ],
-      ),
-    );
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    StreamProvider<List<Food>>.value(
+                      updateShouldNotify: (_, __) => true,
+                      value: db.streamFoods(),
+                      child: Products(notify: refresh),
+                      catchError: (context, e) {
+                        print(e);
+                        return;
+                      },
+                      initialData: [],
+                    ),
+                    //productList(),
+                  ],
+                )
+              ],
+            ),
+          );
   }
 }
 
@@ -144,9 +165,9 @@ class _OrdersWState extends State<OrdersW> {
         child: ListView(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          children: List.generate(foods.length, (int index) {
+          children: foods.map((food) {
             final ago = timeago.format(
-              foods[index].orderTimestamp,
+              food.orderTimestamp,
             );
 
             //print(foods[index].name);
@@ -168,7 +189,7 @@ class _OrdersWState extends State<OrdersW> {
                           child: FittedBox(
                             child: CachedNetworkImage(
                               //height: 50.0,
-                              imageUrl: foods[index].image,
+                              imageUrl: food.image,
                               placeholder: (context, url) => Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: CircularProgressIndicator(
@@ -196,19 +217,18 @@ class _OrdersWState extends State<OrdersW> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    foods[index].name.length > 10
-                                        ? foods[index]
-                                                .name
+                                    food.name.length > 10
+                                        ? food.name
                                                 .substring(0, 10)
                                                 .toUpperCase() +
                                             '...'
-                                        : foods[index].name.toUpperCase(),
+                                        : food.name.toUpperCase(),
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    'N ' + foods[index].price.toString(),
+                                    'N ' + food.price.toString(),
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold),
@@ -226,13 +246,14 @@ class _OrdersWState extends State<OrdersW> {
                                       //setState(() {});
                                     },
                                     starCount: 5,
-                                    rating: 4.1,
+                                    rating:
+                                        double.parse(food.avgRate.toString()),
                                     size: 20.0,
                                     color: ratingColor,
-                                    borderColor: primaryColor,
+                                    borderColor: ratingColor,
                                     spacing: 0.0),
                                 Text(
-                                  ' (50)',
+                                  '(${formatNumber(food.totalRating)})',
                                   style: TextStyle(fontSize: 13),
                                 ),
                               ],
@@ -253,7 +274,7 @@ class _OrdersWState extends State<OrdersW> {
                 ),
               ),
             );
-          }),
+          }).toList(),
         ));
   }
 }
@@ -319,169 +340,150 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   @override
   void initState() {
-    checkGps(function: () => setState(() {}));
-    checkGPS(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     var foods = Provider.of<List<Food>>(context);
-    var loc = Provider.of<LocationProvider>(context);
+    //var loc = Provider.of<LocationProvider>(context);
 
     if (cat != 'all') {
       foods = foods.where((food) => food.category == cat).toList();
     }
 
-    /* foods.sort((a, b) {
-      return a.resturant.location
-          .compareTo(b.resturant.distance.toInt());
-    }); */
-    //print(foods);
-    //return Container();
-    return !check
-        ? noGps(() {
-            checkGps(function: () => widget.notify());
-            checkGPS(context);
-          })
-        : Column(
-            children: foods.map((food) {
-            //var res = db.getResturant(food.resturantId);
-            //print(food.category);
-            return Card(
-              elevation: 4.0,
-              child: Container(
-                padding: EdgeInsets.all(10.0),
-                child: InkWell(
-                  onTap: () {},
-                  splashColor: primaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+        children: foods.map((food) {
+      return Card(
+        elevation: 4.0,
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          child: InkWell(
+            onTap: () {},
+            splashColor: primaryColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                                food.name.length > 22
-                                    ? food.name.substring(0, 22).toUpperCase() +
-                                        '...'
-                                    : food.name.toUpperCase(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                )),
-                            SizedBox(
-                              height: 3,
+                      Text(
+                          food.name.length > 22
+                              ? food.name.substring(0, 22).toUpperCase() + '...'
+                              : food.name.toUpperCase(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          )),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text('N${food.price}',
+                          style: TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.w300)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          SmoothStarRating(
+                              allowHalfRating: true,
+                              onRatingChanged: (v) {
+                                //rating = v;
+                                //setState(() {});
+                              },
+                              starCount: 5,
+                              rating: double.parse(food.avgRate.toString()),
+                              size: 20.0,
+                              color: ratingColor,
+                              borderColor: ratingColor,
+                              spacing: 0.0),
+                          Text(
+                            '(${formatNumber(food.totalRating)})',
+                            style: TextStyle(fontSize: 13),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            food.resturant.name,
+                            style: TextStyle(
+                                //fontStyle: FontStyle.italic,
+                                fontSize: 14.0),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              '(${food.category})',
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic, fontSize: 12.0),
                             ),
-                            Text('N${food.price}',
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w300)),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SmoothStarRating(
-                                    allowHalfRating: true,
-                                    onRatingChanged: (v) {
-                                      //rating = v;
-                                      //setState(() {});
-                                    },
-                                    starCount: 5,
-                                    rating: 4.3,
-                                    size: 20.0,
-                                    color: ratingColor,
-                                    borderColor: primaryColor,
-                                    spacing: 0.0),
-                                Text(
-                                  ' (50)',
-                                  style: TextStyle(fontSize: 13),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  food.resturant.name,
-                                  style: TextStyle(
-                                      //fontStyle: FontStyle.italic,
-                                      fontSize: 14.0),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    '(${food.category})',
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 12.0),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(children: <Widget>[
+                          food.resturant.distance == null
+                              ? Container()
+                              : Row(children: <Widget>[
+                                  Icon(
+                                    Icons.location_on,
+                                    size: 15.0,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                              child: Row(children: <Widget>[
-                                food.resturant.distance == null
-                                    ? Container()
-                                    : Row(children: <Widget>[
-                                        Icon(
-                                          Icons.location_on,
-                                          size: 15.0,
-                                        ),
-                                        Text(
-                                          (food.resturant.distance / 1000)
-                                                  .round()
-                                                  .toString() +
-                                              ' km',
-                                          style: TextStyle(fontSize: 12.00),
-                                        )
-                                      ]),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 10.0),
-                                  child: food.resturant.recommend != true
-                                      ? Container()
-                                      : Icon(Icons.star, size: 15.0),
-                                )
-                              ]),
-                            ),
-                          ]),
-                      Container(
-                          height: 100.0,
-                          width: 100.0,
-                          child: FittedBox(
-                            child: CachedNetworkImage(
-                              //height: 50.0,
-                              imageUrl: food.image,
-                              placeholder: (context, url) => Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.0,
-                                  backgroundColor: primaryColor,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Icon(
-                                  Icons.error,
-                                  color: primaryColor,
-                                ),
-                              ),
-                            ),
-                            fit: BoxFit.cover,
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList());
+                                  Text(
+                                    (food.resturant.distance / 1000)
+                                            .round()
+                                            .toString() +
+                                        ' km',
+                                    style: TextStyle(fontSize: 12.00),
+                                  )
+                                ]),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: food.resturant.recommend != true
+                                ? Container()
+                                : Icon(Icons.star, size: 15.0),
+                          )
+                        ]),
+                      ),
+                    ]),
+                Container(
+                    height: 100.0,
+                    width: 100.0,
+                    child: FittedBox(
+                      child: CachedNetworkImage(
+                        //height: 50.0,
+                        imageUrl: food.image,
+                        placeholder: (context, url) => Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.0,
+                            backgroundColor: primaryColor,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Icon(
+                            Icons.error,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ),
+                      fit: BoxFit.cover,
+                    ))
+              ],
+            ),
+          ),
+        ),
+      );
+    }).toList());
   }
 }

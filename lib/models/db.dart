@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geohash/geohash.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hi_food/models/auth_provider.dart';
 import 'package:hi_food/models/location.dart';
+import 'package:hi_food/values.dart';
 import 'package:latlong/latlong.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'dart:async';
@@ -29,8 +31,17 @@ class DB with ChangeNotifier {
   Future<List<Resturant>> getResturants(QuerySnapshot snap) async {
     List<Resturant> resturants = [];
 
+    //var geo = Geoflutterfire();
     for (var doc in snap.documents) {
+      //print(geo.data);
       var res = Resturant.fromFirestore(doc);
+      /* var point = geo.point(
+          latitude: res.location.latitude, longitude: res.location.longitude);
+      //geo.collection()
+      await _db
+          .collection('resturants')
+          .document(res.id)
+          .updateData({'loc': point.data}); */
 
       resturants.add(res);
     }
@@ -58,6 +69,8 @@ class DB with ChangeNotifier {
     } */
     Position position = await Geolocator().getCurrentPosition();
     Distance distance = new Distance();
+    GeoFirePoint geo = Geoflutterfire()
+        .point(latitude: position.latitude, longitude: position.longitude);
     for (var resturant in resturants) {
       resturant.distance = distance(
           LatLng(position.latitude, position.longitude),
@@ -69,6 +82,8 @@ class DB with ChangeNotifier {
           .round()
           .compareTo(a.subscription.price.round());
     });
+    double subDis = 0.2 * defaultLocationRange;
+    //print(subDis);
     List<Resturant> byPrice = resturants
         .where((resturant) => resturant.subscription.price > 0)
         .toList()
@@ -77,11 +92,11 @@ class DB with ChangeNotifier {
               .difference(resturant.subscription.timestamp)
               .inDays;
           resturant.recommend = true;
-          print('day $day');
+          //print('day $day');
           return day < 30;
         })
         .toList()
-        .where((r) => (r.distance / 1000).round() <= 20)
+        .where((r) => (r.distance / 1000).round() <= subDis)
         .toList();
     /* for (var r in byPrice) {
       r.recommend = true;
@@ -89,7 +104,10 @@ class DB with ChangeNotifier {
     //resturants.removeWhere((r) => byPrice.contains(r));
     resturants.sort((a, b) => a.distance.round().compareTo(b.distance.round()));
 
-    List<Resturant> newResturants = [...byPrice, ...resturants];
+    List<Resturant> newResturants = [...byPrice, ...resturants]
+        .where(
+            (resturant) => (resturant.distance / 1000) <= defaultLocationRange)
+        .toList();
     return newResturants;
   }
 
@@ -112,6 +130,7 @@ class DB with ChangeNotifier {
           .round()
           .compareTo(a.resturant.subscription.price.round());
     });
+    double subDis = 0.2 * defaultLocationRange;
     List<Food> byPrice = foods
         .where((food) => food.resturant.subscription.price > 0)
         .toList()
@@ -124,22 +143,27 @@ class DB with ChangeNotifier {
           return day < 30;
         })
         .toList()
-        .where((r) => (r.resturant.distance / 1000).round() <= 20)
+        .where((r) => (r.resturant.distance / 1000).round() <= subDis)
         .toList();
 
     //foods.removeWhere((r) => byPrice.contains(r));
     foods.sort((a, b) =>
         a.resturant.distance.round().compareTo(b.resturant.distance.round()));
 
-    List<Food> newFoods = [...byPrice, ...foods];
+    List<Food> newFoods = [...byPrice, ...foods]
+        .where(
+            (food) => (food.resturant.distance / 1000) <= defaultLocationRange)
+        .toList();
     return newFoods;
   }
 
   Stream<List<Resturant>> streamResturants() async* {
     Position position = await Geolocator().getCurrentPosition();
-    var range = LocationProvider()
-        .getGeohashRange(position.latitude, position.longitude, (100 / 1.609));
-    print(Geohash.encode(7.14484395, 4.199580));
+    var range = LocationProvider().getGeohashRange(
+        position.latitude, position.longitude, (maxLocationRange / 1.609));
+    // print((50 / 1.609));
+    //print(Geohash.encode(7.14484395, 3.9995));
+
     yield* _db
         .collection('resturants')
         .where('geohash', isGreaterThanOrEqualTo: range['lower'])
@@ -157,9 +181,11 @@ class DB with ChangeNotifier {
 
   Stream<List<Food>> streamFoods() async* {
     Position position = await Geolocator().getCurrentPosition();
-    print('${position.latitude} ${position.longitude}');
-    var range = LocationProvider()
-        .getGeohashRange(position.latitude, position.longitude, (100 / 1.609));
+    //print('${position.latitude} ${position.longitude}');
+    //print(Geohash.encode(7.14484395, 3.199580629643363));
+    //print(defaultLocationRange);
+    var range = LocationProvider().getGeohashRange(
+        position.latitude, position.longitude, (maxLocationRange / 1.609));
     List<Food> foods = [];
 
     yield* _db
@@ -207,11 +233,17 @@ class DB with ChangeNotifier {
     });
   }
 
-  Stream<List<Food>> streamAllOrders() {
+  Stream<List<Food>> streamAllOrders() async* {
     //print(user.uid);
-    return _db
+    /*  Position position = await Geolocator().getCurrentPosition();
+    var range = LocationProvider().getGeohashRange(
+        position.latitude, position.longitude, (defaultLocationRange / 1.609));
+    */
+    yield* _db
         .collectionGroup('orders')
         .orderBy('timestamp', descending: true)
+        //.where('geohash', isGreaterThanOrEqualTo: range['lower'])
+        // .where('geohash', isLessThanOrEqualTo: range['upper'])
         .limit(5)
         .snapshots()
         .asyncMap((snap) async {
@@ -249,5 +281,28 @@ class DB with ChangeNotifier {
         (list) => list.documents
             .map((doc) => FoodCategory.fromFirestore(doc))
             .toList());
+  }
+
+  Stream<List<Food>> searchFood() async* {
+    yield* _db
+        .collection('foods')
+        .where('name', isEqualTo: search)
+        .snapshots()
+        .asyncMap((snap) async {
+      var foods = await getFoods(snap);
+      return foods;
+    });
+  }
+
+  Stream<List<Resturant>> searchResturant() async* {
+    yield* _db
+        .collection('resturants')
+        .where('name', isEqualTo: search)
+        .where('address', isEqualTo: search)
+        .snapshots()
+        .asyncMap((snap) async {
+      var res = await getResturants(snap);
+      return res;
+    });
   }
 }

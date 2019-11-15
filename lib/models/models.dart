@@ -3,17 +3,21 @@ import 'package:hi_food/models/db.dart';
 import 'package:hi_food/models/location.dart';
 
 class Resturant implements Favorites {
+  final String id;
   final String name;
   final String description;
   final String image;
   final String address;
   bool recommend;
+  var avgRate;
+  var totalRating;
   final DateTime timestamp;
   final GeoPoint location;
   double distance;
   Subscription subscription;
 
   Resturant({
+    this.id,
     this.name,
     this.description,
     this.image,
@@ -23,10 +27,15 @@ class Resturant implements Favorites {
     this.distance,
     this.subscription,
     this.recommend,
+    this.avgRate,
+    this.totalRating,
   });
 
   factory Resturant.fromMap(Map data) {
     return Resturant(
+      id: data['id'] ?? '',
+      avgRate: data['avg_rate'] ?? 0.0,
+      totalRating: data['total_rating'] ?? 0.0,
       subscription: Subscription(price: 0.0, timestamp: DateTime.now()),
       name: data['name'] ?? '',
       description: data['description'] ?? '',
@@ -41,6 +50,9 @@ class Resturant implements Favorites {
     Map data = doc.data ?? {};
 
     var res = Resturant(
+      id: doc.documentID,
+      avgRate: data['avg_rate'] ?? 0.0,
+      totalRating: data['total_rating'] ?? 0.0,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       image: data['image'] ?? '',
@@ -70,6 +82,8 @@ class Food implements Favorites {
   final DateTime timestamp;
   final List ingredients;
   final String resturantId;
+  var avgRate;
+  var totalRating;
   Resturant resturant;
   Food({
     this.name,
@@ -83,12 +97,16 @@ class Food implements Favorites {
     this.resturant,
     this.unit,
     this.orderTimestamp,
+    this.avgRate,
+    this.totalRating,
   });
 
   factory Food.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
 
     return Food(
+      avgRate: data['avg_rate'] ?? 0.0,
+      totalRating: data['total_rating'] ?? 0.0,
       resturantId: data['resturant_id'] ?? '',
       name: data['name'] ?? '',
       image: data['image'] ?? '',
@@ -101,6 +119,8 @@ class Food implements Favorites {
   }
   factory Food.fromMap(Map data) {
     return Food(
+      avgRate: data['avg_rate'] ?? 0.0,
+      totalRating: data['total_rating'] ?? 0.0,
       name: data['name'] ?? '',
       image: data['image'] ?? '',
       price: data['price'] ?? '',
