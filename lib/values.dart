@@ -16,7 +16,8 @@ double minLocationRange;
 double maxLocationRange;
 
 //Text
-String search;
+String foodSearch = '';
+String resSearch = '';
 
 //Bools
 bool check = false;

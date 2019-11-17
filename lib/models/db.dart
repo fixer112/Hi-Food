@@ -35,13 +35,11 @@ class DB with ChangeNotifier {
     for (var doc in snap.documents) {
       //print(geo.data);
       var res = Resturant.fromFirestore(doc);
-      /* var point = geo.point(
-          latitude: res.location.latitude, longitude: res.location.longitude);
-      //geo.collection()
-      await _db
-          .collection('resturants')
-          .document(res.id)
-          .updateData({'loc': point.data}); */
+      Position position = await Geolocator().getCurrentPosition();
+      Distance distance = new Distance();
+
+      res.distance = distance(LatLng(position.latitude, position.longitude),
+          LatLng(res.location.latitude, res.location.longitude));
 
       resturants.add(res);
     }
@@ -51,13 +49,20 @@ class DB with ChangeNotifier {
 
   Future<List<Food>> getFoods(QuerySnapshot snap) async {
     List<Food> foods = [];
+    Position position = await Geolocator().getCurrentPosition();
+    Distance distance = new Distance();
+
     for (var doc in snap.documents) {
       var f = Food.fromFirestore(doc);
-      //print(Geohash.decode(doc.data['geohash']));
-      foods.add(f);
       var res = await getResturant(f.resturantId);
       //print(res.location.latitude);
       f.resturant = res;
+      f.resturant.distance = distance(
+          LatLng(position.latitude, position.longitude),
+          LatLng(
+              f.resturant.location.latitude, f.resturant.location.longitude));
+      //print(f.resturant.distance);
+      foods.add(f);
     }
     return foods;
   }
@@ -67,15 +72,6 @@ class DB with ChangeNotifier {
     if (!check) {
       return resturants;
     } */
-    Position position = await Geolocator().getCurrentPosition();
-    Distance distance = new Distance();
-    GeoFirePoint geo = Geoflutterfire()
-        .point(latitude: position.latitude, longitude: position.longitude);
-    for (var resturant in resturants) {
-      resturant.distance = distance(
-          LatLng(position.latitude, position.longitude),
-          LatLng(resturant.location.latitude, resturant.location.longitude));
-    }
 
     resturants.sort((a, b) {
       return b.subscription.price
@@ -117,14 +113,14 @@ class DB with ChangeNotifier {
     if (!check) {
       return foods;
     } */
-    Position position = await Geolocator().getCurrentPosition();
+    /* Position position = await Geolocator().getCurrentPosition();
     Distance distance = new Distance();
     for (var food in foods) {
       food.resturant.distance = distance(
           LatLng(position.latitude, position.longitude),
           LatLng(food.resturant.location.latitude,
               food.resturant.location.longitude));
-    }
+    } */
     foods.sort((a, b) {
       return b.resturant.subscription.price
           .round()
@@ -283,18 +279,22 @@ class DB with ChangeNotifier {
             .toList());
   }
 
-  Stream<List<Food>> searchFood() async* {
-    yield* _db
-        .collection('foods')
-        .where('name', isEqualTo: search)
-        .snapshots()
-        .asyncMap((snap) async {
-      var foods = await getFoods(snap);
-      return foods;
-    });
+  /* Future<QuerySnapshot> searchFood(text) async {
+    return _db.collection('foods').startAt([text]).endAt([text + '\uf8ff'])
+        //.where('name', isGreaterThanOrEqualTo: text)
+        //.where('name', isLessThanOrEqualTo: text + 'z')
+        .getDocuments();
   }
 
-  Stream<List<Resturant>> searchResturant() async* {
+  Future<QuerySnapshot> searchResturant(text) async {
+    return _db
+        .collection('resturants')
+        .where('name', isEqualTo: text)
+        .where('address', isEqualTo: text)
+        .getDocuments();
+  }
+
+  Stream<List<Resturant>> searchResturant2() async* {
     yield* _db
         .collection('resturants')
         .where('name', isEqualTo: search)
@@ -304,5 +304,5 @@ class DB with ChangeNotifier {
       var res = await getResturants(snap);
       return res;
     });
-  }
+  } */
 }

@@ -18,6 +18,10 @@ class Resturants extends StatefulWidget {
 
 class _ResturantState extends State<Resturants> {
   var db = DB();
+  refresh() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +40,7 @@ class _ResturantState extends State<Resturants> {
         : ListView(
             padding: EdgeInsets.all(6.0),
             children: <Widget>[
-              Search('resturant'),
+              Search('resturant', refresh),
               SizedBox(
                 height: 10.0,
               ),
@@ -72,13 +76,16 @@ class _ResturantWState extends State<ResturantW> {
     var resturants = Provider.of<List<Resturant>>(context);
     var loc = Provider.of<LocationProvider>(context);
 
-    /* resturants.sort((a, b) {
-      return a.distance.toInt().compareTo(b.distance.toInt());
-    }); */
-    // Future<double> distanceInMeters = Geolocator().distanceBetween(52.2165157, 6.9437819, 52.3546274, 4.8285838);
+    if (resSearch != '') {
+      //print(search.contains('rice'));
 
-    //return Container(
-    //print(resturants);
+      resturants = resturants.where((res) {
+        bool cond = res.name.toUpperCase().contains(resSearch.toUpperCase());
+
+        return cond;
+      }).toList();
+      //print(foods);
+    }
     return ListView(
       physics: BouncingScrollPhysics(),
       shrinkWrap: true,
