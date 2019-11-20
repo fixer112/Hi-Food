@@ -95,7 +95,9 @@ class _ResturantWState extends State<ResturantW> {
           elevation: 4.0,
           child: InkWell(
             splashColor: primaryColor,
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/resturant');
+            },
             child: Row(
               children: <Widget>[
                 Container(

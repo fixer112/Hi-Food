@@ -7,6 +7,7 @@ import 'package:hi_food/models/remote_config.dart';
 import 'package:hi_food/pages/auth.dart';
 import 'package:hi_food/pages/user/home_page.dart';
 import 'package:hi_food/pages/splashScreen.dart';
+import 'package:hi_food/pages/user/resturant.dart';
 import 'package:hi_food/values.dart';
 import 'package:provider/provider.dart';
 import 'package:hi_food/models/db.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
                         '/home': (context) => Home(),
                         '/land': (context) => SplashScreen(),
                         '/auth': (context) => AuthPage(),
+                        '/resturant': (context) => ResturantPage(),
                       },
                     );
             }));
