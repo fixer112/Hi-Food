@@ -138,7 +138,7 @@ class _ResturantPageState extends State<ResturantPage> {
                           IconButton(
                             icon: Icon( Icons.arrow_forward ),
                             onPressed: (){
-                              // Navigate to full reviews page
+                              Navigator.pushNamed(context, '/reviews');
                             },
                           ),
                         ]
@@ -335,6 +335,12 @@ class _ResturantPageState extends State<ResturantPage> {
               child: AppBar(
                 elevation: 0,
                 backgroundColor: Color.fromRGBO(0, 0, 0, 0.3),
+                leading: IconButton(
+                  icon: Icon( Icons.arrow_back, color: Colors.white ),
+                  onPressed: (){
+                    Navigator.pop(context);
+                  }
+                ),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon( Icons.search, color: Colors.white, ),
