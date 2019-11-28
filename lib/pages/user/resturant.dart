@@ -267,7 +267,7 @@ class _ResturantPageState extends State<ResturantPage>
                     child: TabBarView(
                       controller: _tabController,
                       children: <Widget>[
-                        infoBar(widget.resturant),
+                        infoBar(context, widget.resturant),
                         foodBar(widget.resturant, refresh),
                       ],
                     ),
@@ -306,7 +306,7 @@ class _ResturantPageState extends State<ResturantPage>
   }
 }
 
-infoBar(Resturant resturant) {
+infoBar(context, Resturant resturant) {
   return ListView(
     children: <Widget>[
       Row(
@@ -320,7 +320,7 @@ infoBar(Resturant resturant) {
             IconButton(
               icon: Icon(Icons.arrow_forward),
               onPressed: () {
-                // Navigate to full reviews page
+                Navigator.pushNamed(context, '/reviews');
               },
             ),
           ]),

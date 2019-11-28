@@ -55,10 +55,13 @@ class _HomeState extends State<Home> {
             index: 1,
             key: _bottomNavigationKey,
             items: <Widget>[
-              Icon(
-                FontAwesomeIcons.solidHeart,
-                size: 20,
-                color: Colors.white,
+              InkWell(
+                onTap: ()=>Navigator.pushNamed(context, '/favourites'),
+                child: Icon(
+                  FontAwesomeIcons.solidHeart,
+                  size: 20,
+                  color: Colors.white,
+                ),
               ),
               Icon(
                 FontAwesomeIcons.hamburger,
