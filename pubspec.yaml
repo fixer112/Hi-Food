@@ -48,6 +48,7 @@ dependencies:
   geohash: ^0.2.1
   firebase_remote_config: ^0.2.0+9
   geoflutterfire: ^2.0.3+5
+  url_launcher: ^5.2.5
 
 dev_dependencies:
   flutter_test:

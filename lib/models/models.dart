@@ -8,6 +8,11 @@ class Resturant implements Favorites {
   final String description;
   final String image;
   final String address;
+  final bool open;
+  final String openTime;
+  final String closeTime;
+  final String email;
+  final String website;
   bool recommend;
   var avgRate;
   var totalRating;
@@ -15,6 +20,8 @@ class Resturant implements Favorites {
   final GeoPoint location;
   double distance;
   Subscription subscription;
+  var totalOrders;
+  var avgSpeed;
 
   Resturant({
     this.id,
@@ -29,9 +36,16 @@ class Resturant implements Favorites {
     this.recommend,
     this.avgRate,
     this.totalRating,
+    this.totalOrders,
+    this.avgSpeed,
+    this.closeTime,
+    this.openTime,
+    this.open,
+    this.email,
+    this.website,
   });
 
-  factory Resturant.fromMap(Map data) {
+  /* factory Resturant.fromMap(Map data) {
     return Resturant(
       id: data['id'] ?? '',
       avgRate: data['avg_rate'] ?? 0.0,
@@ -45,14 +59,14 @@ class Resturant implements Favorites {
       timestamp: DateTime.parse(data['timestamp'].toDate().toString()) ?? '',
       recommend: false,
     );
-  }
+  } */
   factory Resturant.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data ?? {};
 
     var res = Resturant(
       id: doc.documentID,
       avgRate: data['avg_rate'] ?? 0.0,
-      totalRating: data['total_rating'] ?? 0.0,
+      totalRating: data['total_rating'] ?? 0,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       image: data['image'] ?? '',
@@ -60,7 +74,14 @@ class Resturant implements Favorites {
       location: data['location'] ?? GeoPoint(0.0, 0.0),
       timestamp: DateTime.parse(data['timestamp'].toDate().toString()) ?? '',
       subscription: Subscription(price: 0.0, timestamp: DateTime.now()),
+      totalOrders: data['total_orders'] ?? 0.0,
       recommend: false,
+      open: data['open'] ?? false,
+      openTime: data['open_time'] ?? '9AM',
+      closeTime: data['close_time'] ?? '6PM',
+      email: data['email'] ?? '',
+      website: data['website'] ?? '',
+      //avgSpeed: data['total_orders']??
     );
 
     if (data['subscription'] != null) {

@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
                         '/home': (context) => Home(),
                         '/land': (context) => SplashScreen(),
                         '/auth': (context) => AuthPage(),
-                        '/resturant': (context) => ResturantPage(),
+                        //'/resturant': (context) => ResturantPage(),
                       },
                     );
             }));

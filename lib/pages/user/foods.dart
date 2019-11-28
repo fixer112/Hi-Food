@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/db.dart';
-import 'package:hi_food/models/location.dart';
 import 'package:hi_food/models/models.dart';
 import 'package:hi_food/values.dart';
 import 'package:hi_food/widgets/food_widget.dart';
@@ -39,7 +38,6 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //checkGps(function: () => setState(() {}));
     return !check
         ? noGps(() {
             checkGps(function: () => setState(() {}));
@@ -84,7 +82,6 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-
                     SizedBox(height: 15.0),
                     Container(
                       //height: 200,
@@ -97,41 +94,12 @@ class _FoodsState extends State<Foods> with SingleTickerProviderStateMixin {
                         },
                         initialData: [],
                       ),
-                      /* ListView(
-              scrollDirection: Axis.horizontal,
-              children: List.generate(6, (int index) {
-                return Container(width: 200.0, child: demoLister);
-              }),
-            ), */
                     ),
-
                     SizedBox(
                       height: 10.0,
                     ),
-                    StreamProvider<List<FoodCategory>>.value(
-                      value: db.streamFoodCategories(),
-                      child: Categories(notify: refresh),
-                      catchError: (context, e) {
-                        print(e);
-                        return;
-                      },
-                      initialData: [],
-                    ),
-
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    StreamProvider<List<Food>>.value(
-                      updateShouldNotify: (_, __) => true,
-                      value: db.streamFoods(),
-                      child: Products(notify: refresh),
-                      catchError: (context, e) {
-                        print(e);
-                        return;
-                      },
-                      initialData: [],
-                    ),
-                    //productList(),
+                    foodList(db.streamFoods(),
+                        Stream.fromFuture(db.streamFoodCategories()), refresh)
                   ],
                 )
               ],
@@ -280,7 +248,6 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  int value = 0;
   @override
   void initState() {
     super.initState();
@@ -291,36 +258,7 @@ class _CategoriesState extends State<Categories> {
   Widget build(BuildContext context) {
     var categories = Provider.of<List<FoodCategory>>(context);
 
-    return Container(
-      height: 50,
-      child: ListView(
-        //shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        children: List.generate(categories.length, (index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ChoiceChip(
-              selectedColor: primaryColor,
-              //disabledColor: ,
-              labelStyle: TextStyle(
-                  color: value == index ? Colors.white : Colors.black),
-              label: Text(categories[index].name.toUpperCase()),
-              selected: value == index,
-              onSelected: (selected) {
-                setState(() {
-                  value = index;
-                  cat = categories[index].name;
-                  //Products(set);
-                  print(cat);
-                });
-                widget.notify();
-              },
-            ),
-          );
-        }),
-      ),
-    );
+    return showCats(categories, widget.notify);
   }
 }
 
@@ -339,22 +277,73 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     var foods = Provider.of<List<Food>>(context);
+
     //var loc = Provider.of<LocationProvider>(context);
-
-    if (cat != 'all') {
-      foods = foods.where((food) => food.category == cat).toList();
-    }
-    if (foodSearch != '') {
-      //print(search.contains('rice'));
-
-      foods = foods.where((food) {
-        bool cond = food.name.toUpperCase().contains(foodSearch.toUpperCase());
-
-        return cond;
-      }).toList();
-      //print(foods);
-    }
 
     return food(foods);
   }
+}
+
+foodList(Stream<List<Food>> streamFoods,
+    Stream<List<FoodCategory>> streamFoodCats, Function refresh) {
+  return Column(
+    children: <Widget>[
+      StreamProvider<List<FoodCategory>>.value(
+        value: streamFoodCats,
+        child: Categories(notify: refresh),
+        catchError: (context, e) {
+          print(e);
+          return;
+        },
+        initialData: [],
+      ),
+      SizedBox(
+        height: 10.0,
+      ),
+      StreamProvider<List<Food>>.value(
+        updateShouldNotify: (_, __) => true,
+        value: streamFoods,
+        child: Products(notify: refresh),
+        catchError: (context, e) {
+          print(e);
+          return;
+        },
+        initialData: [],
+      ),
+    ],
+  );
+}
+
+showCats(List<FoodCategory> categories, Function notify) {
+  int value = 0;
+  return Container(
+    height: 50,
+    child: ListView(
+      //shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
+      children: List.generate(categories.length, (index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ChoiceChip(
+            selectedColor: primaryColor,
+            //disabledColor: ,
+            labelStyle:
+                TextStyle(color: value == index ? Colors.white : Colors.black),
+            label: Text(categories[index].name.toUpperCase()),
+            selected: value == index,
+            onSelected: (selected) {
+              //setState(() {
+              value = index;
+              cat = categories[index].name;
+              //Products(set);
+              //print(cat);
+              //});
+              notify();
+            },
+          ),
+        );
+      }),
+    ),
+  );
 }

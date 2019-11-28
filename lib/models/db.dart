@@ -67,6 +67,17 @@ class DB with ChangeNotifier {
     return foods;
   }
 
+  Future<List<Food>> getFoodsOnly(QuerySnapshot snap, Resturant res) async {
+    List<Food> foods = [];
+
+    for (var doc in snap.documents) {
+      var f = Food.fromFirestore(doc);
+      f.resturant = res;
+      foods.add(f);
+    }
+    return foods;
+  }
+
   Future<List<Resturant>> sortResturants(List<Resturant> resturants) async {
     /* bool check = await LocationProvider().check();
     if (!check) {
@@ -198,6 +209,17 @@ class DB with ChangeNotifier {
     });
   }
 
+  Future<List<Food>> getResFoods(Resturant res) async {
+    return _db
+        .collection('foods')
+        .where('resturant_id', isEqualTo: res.id)
+        .getDocuments()
+        .then((snap) async {
+      var foods = await getFoodsOnly(snap, res);
+      return foods;
+    });
+  }
+
   Stream<List<Orders>> streamMyOrders() async* {
     var auth = Auth();
     List<Orders> orders = [];
@@ -272,11 +294,20 @@ class DB with ChangeNotifier {
     });
   }
 
-  Stream<List<FoodCategory>> streamFoodCategories() {
-    return _db.collection('food_categories').orderBy('name').snapshots().map(
+  Future<List<FoodCategory>> streamFoodCategories() async {
+    return _db
+        .collection('food_categories')
+        .orderBy('name')
+        .getDocuments()
+        .then((snap) {
+      return snap.documents
+          .map((doc) => FoodCategory.fromFirestore(doc))
+          .toList();
+    });
+    /* .snapshots().map(
         (list) => list.documents
             .map((doc) => FoodCategory.fromFirestore(doc))
-            .toList());
+            .toList()); */
   }
 
   /* Future<QuerySnapshot> searchFood(text) async {
