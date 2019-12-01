@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/db.dart';
 import 'package:hi_food/models/models.dart';
+import 'package:hi_food/pages/user/food.dart';
 import 'package:hi_food/values.dart';
 import 'package:hi_food/widgets/food_widget.dart';
 import 'package:hi_food/widgets/search.dart';
@@ -140,7 +141,7 @@ class _OrdersWState extends State<OrdersW> {
                   child: InkWell(
                     splashColor: primaryColor,
                     onTap: () {
-                      //print('Card tapped.');
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FoodPage(food)));
                     },
                     child: Column(
                       children: <Widget>[
