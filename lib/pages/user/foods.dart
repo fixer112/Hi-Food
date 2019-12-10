@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hi_food/models/db.dart';
 import 'package:hi_food/models/models.dart';
-import 'package:hi_food/pages/user/food.dart';
+//import 'package:hi_food/pages/user/food.dart';
+import 'package:hi_food/pages/user/foodpage.dart';
 import 'package:hi_food/values.dart';
 import 'package:hi_food/widgets/food_widget.dart';
 import 'package:hi_food/widgets/search.dart';
@@ -141,7 +142,10 @@ class _OrdersWState extends State<OrdersW> {
                   child: InkWell(
                     splashColor: primaryColor,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FoodPage(food)));
+                      print('So well');
+                      // Changed the navigator just to test the new food page
+                      // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FoodPage(food)));
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FoodPage()));
                     },
                     child: Column(
                       children: <Widget>[
